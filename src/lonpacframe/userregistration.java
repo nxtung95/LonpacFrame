@@ -31,8 +31,7 @@ public class userregistration extends javax.swing.JFrame {
      */
     public userregistration() {
         initComponents();
-                
-//        txtIc.set
+        lbAlert.setText("");
     }
  
     /**
@@ -61,6 +60,7 @@ public class userregistration extends javax.swing.JFrame {
         txtDob = new javax.swing.JTextField();
         txtTown = new javax.swing.JTextField();
         cmbGender = new javax.swing.JComboBox<>();
+        lbAlert = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -88,13 +88,6 @@ public class userregistration extends javax.swing.JFrame {
         });
 
         txtIc.setToolTipText("xxxxxx-xx-xxxx");
-        txtIc.addInputMethodListener(new java.awt.event.InputMethodListener() {
-            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
-            }
-            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
-                txtIcInputMethodTextChanged(evt);
-            }
-        });
         txtIc.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtIcKeyReleased(evt);
@@ -122,6 +115,9 @@ public class userregistration extends javax.swing.JFrame {
         txtTown.setEditable(false);
 
         cmbGender.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Male", "Female" }));
+
+        lbAlert.setForeground(new java.awt.Color(255, 0, 51));
+        lbAlert.setText("jLabel12");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -158,7 +154,9 @@ public class userregistration extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel7)
                                 .addGap(29, 29, 29)
-                                .addComponent(txtIc, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(lbAlert, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(txtIc, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE))
                                 .addGap(0, 0, Short.MAX_VALUE)))))
                 .addGap(35, 35, 35)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -179,7 +177,9 @@ public class userregistration extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(25, 25, 25)
                 .addComponent(jLabel1)
-                .addGap(30, 30, 30)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lbAlert)
+                .addGap(8, 8, 8)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(txtIc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -246,7 +246,7 @@ public class userregistration extends javax.swing.JFrame {
         
         // Invalid ICNumber format
         if ("02".equals(code)) {
-            JOptionPane.showMessageDialog(null, "Please format ICNumber: xxxxxx-xx-xxxx");
+            JOptionPane.showMessageDialog(null, "Please format ICNumber: xxxxxx-xx-xxxx, x: number");
             return;
         }
         
@@ -299,23 +299,20 @@ public class userregistration extends javax.swing.JFrame {
 
     private void txtIcKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtIcKeyReleased
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtIcKeyReleased
-
-    private void txtIcInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_txtIcInputMethodTextChanged
-        // TODO add your handling code here:
-        String character = String.valueOf(evt.getText().first());
-
-        // Validate input character from txtIc
+        
+        // Continue if input character is not number or dash
+        String character = String.valueOf(evt.getKeyChar());
         String pattern = "[\\d-]";
         if (!character.matches(pattern)) {
-            JOptionPane.showMessageDialog(null, "ICNumber: Please input number or dash!");
+            lbAlert.setText("Please enter ICNumber is number or dash!");
             String text = txtIc.getText();
-            txtIc.setText(text.substring(0, text.length() - 1));
+            txtIc.setText(text.length() > 0 ? text.substring(0, text.length() - 1) : "");
             return;
         }
-
+        lbAlert.setText("");
+        
         // Set Dob based on first 6 numbers from IcNumber
-        if (txtIc.getText().length() >= 6) {
+        if (txtIc.getText().length() >= 6 && txtDob.getText().isEmpty()) {
             String first6Numbers = txtIc.getText().substring(0, 6);
             SimpleDateFormat format = new SimpleDateFormat("yyMMdd");
             SimpleDateFormat newFormat = new SimpleDateFormat("dd/MM/yy");
@@ -327,7 +324,13 @@ public class userregistration extends javax.swing.JFrame {
             }
             txtDob.setText(dob != null ? newFormat.format(dob) : "");
         }
-    }//GEN-LAST:event_txtIcInputMethodTextChanged
+        
+        // Validate input character from txtIc, total 12 numbers + 2 dash
+        if (txtIc.getText().length() >= 14 && !validateIcNumber(txtIc.getText())) {
+            txtIc.setText("");
+            JOptionPane.showMessageDialog(null, "Please format ICNumber: xxxxxx-xx-xxxx, x: number");
+        }
+    }//GEN-LAST:event_txtIcKeyReleased
                                        
    
     private String validateForm() {
@@ -394,6 +397,7 @@ public class userregistration extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JLabel lbAlert;
     private javax.swing.JTextField txtDob;
     private javax.swing.JTextField txtIc;
     private javax.swing.JTextField txtPcode;
