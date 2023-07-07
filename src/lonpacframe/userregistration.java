@@ -109,6 +109,11 @@ public class userregistration extends javax.swing.JFrame {
                 txtPcodeActionPerformed(evt);
             }
         });
+        txtPcode.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtPcodeKeyReleased(evt);
+            }
+        });
 
         txtDob.setEditable(false);
 
@@ -287,14 +292,6 @@ public class userregistration extends javax.swing.JFrame {
     
     private void txtPcodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPcodeActionPerformed
         // TODO add your handling code here:
-        // Get the postcode entered by the user
-        String postcode = txtPcode.getText();
-        
-        // Retrieve the default town from the database based on the provided postcode
-        String defaultTown = getDefaultTown(postcode);
-
-        // Set the retrieved default town to the txtTown field
-        txtTown.setText(defaultTown);
     }//GEN-LAST:event_txtPcodeActionPerformed
 
     private void txtIcKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtIcKeyReleased
@@ -331,6 +328,28 @@ public class userregistration extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Please format ICNumber: xxxxxx-xx-xxxx, x: number");
         }
     }//GEN-LAST:event_txtIcKeyReleased
+
+    private void txtPcodeKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPcodeKeyReleased
+        // TODO add your handling code here:
+        String character = String.valueOf(evt.getKeyChar());
+        String pattern = "[\\d]";
+        if (!character.matches(pattern)) {
+            lbAlert.setText("Please enter postcode is number!");
+            txtPcode.setText("");
+            return;
+        }
+        lbAlert.setText("");
+        
+        // Get the postcode entered by the user
+        String postcode = txtPcode.getText();
+        if (postcode.length() >= 5) {
+            // Retrieve the default town from the database based on the provided postcode
+            String defaultTown = getDefaultTown(postcode);
+
+            // Set the retrieved default town to the txtTown field
+            txtTown.setText(defaultTown);
+        }
+    }//GEN-LAST:event_txtPcodeKeyReleased
                                        
    
     private String validateForm() {
